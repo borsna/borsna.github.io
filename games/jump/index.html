@@ -1,0 +1,94 @@
+<canvas id="c"></canvas>
+<script>
+    var canvas = document.getElementById("c");
+    canvas.width = 1000;
+    canvas.height = 400;
+    var ctx = canvas.getContext("2d");
+
+    (function () {
+        var requestAnimationFrame = window.requestAnimationFrame ||
+                                    window.mozRequestAnimationFrame || 
+                                    window.webkitRequestAnimationFrame || 
+                                    window.msRequestAnimationFrame;
+        window.requestAnimationFrame = requestAnimationFrame;
+    })();
+
+
+    var keys = [];
+    var player = {
+        x: canvas.width / 2,
+        y: 200,
+        width: 25,
+        height: 25,
+        speed: 3,
+        velX: 0,
+        velY: 0,
+        jumping: false,
+        grounded: false,
+        color:'#E6AC27',
+        update: function(){
+
+        }
+    };
+
+
+    function updatePlayer(){
+        // up arrow or space
+        if (keys[38] || keys[32] || keys[87]) {
+            
+            if (!player.jumping && player.grounded) {
+                player.jumping = true;
+                player.grounded = false;
+                player.velY = -player.speed * 2.5;//how high to jump
+            }
+        }
+        // right arrow
+        if (keys[39] || keys[68]) {
+            
+            if (player.velX < player.speed) {
+                player.velX++;
+            }
+        }
+        // left arrow
+        if (keys[37] || keys[65]) {
+            
+            if (player.velX > -player.speed) {
+                player.velX--;
+            }
+        }
+
+        player.x += player.velX;
+        player.y += player.velY;
+    }
+
+
+    function update() {
+        updatePlayer();
+        ctx.fillStyle = "#00";
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+    
+        ctx.save(); //Freeze redraw
+
+        ctx.fill();//Draw charater stuff
+
+
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+
+        ctx.restore(); //And now do the redraw
+        requestAnimationFrame(update);
+    }
+
+    window.addEventListener("load", function () {
+        update();
+    });
+
+    document.body.addEventListener("keydown", function (e) {
+        keys[e.keyCode] = true;
+    });
+    
+    document.body.addEventListener("keyup", function (e) {
+        keys[e.keyCode] = false;
+    });
+
+</script>
