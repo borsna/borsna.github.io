@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Projects by Olof">
@@ -12,7 +11,6 @@
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
     <link href="css/borsna.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -21,7 +19,25 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "url": "https://borsna.github.io/",
+            "author": {
+              "@type": "Person",
+              "@id": "https://orcid.org/0000-0002-7365-0691"
+              
+            },
+            "hasPart": [
+                {
+                    "@type": "ImageObject",
+                    "url": "https://borsna.github.io/images/borsna-sign.jpg"
+                }
+            ]
+            
+        }
+    </script>
 </head>
 
 <body>
@@ -61,7 +77,7 @@
 
         <div class="row">
             <div class="col-md-8">
-                <img class="img-responsive img-rounded" src="images/borsna-sign.jpg" alt="SND at Bohusgatan 15, Gothenburg">
+                <img class="img-responsive img-rounded" src="images/borsna-sign.jpg" alt="Borsna-skylt i Småland">
             </div>
             <div class="col-md-4">
                 <h1>Olof Olsson</h1>
@@ -78,26 +94,8 @@
                 <p>Building a new search system providing new filter and search capabilties.</p>
                 <a class="btn btn-default" href="games/jump">Jump</a>
             </div>
-            <!-- /.col-md-4 -->
-            <div class="col-md-4">
-                <h2>DDI 4</h2>
-                <p>Drupal 7 based system for suporting modeling of the next major version of DDI.</p>
-                <a class="btn btn-default" href="https://github.com/ddialliance/lion">More Info</a>
-            </div>
-            <!-- /.col-md-4 -->
-            <div class="col-md-4">
-                <h2>DDI-XSLT</h2>
-                <p>Transformations for DDI XML-files to other formats.</p>
-                <a class="btn btn-default" href="https://github.com/MetadataTransform/ddi-xslt">More Info</a>
-            </div>
-            <!-- /.col-md-4 -->
+            
         </div>
-        <!-- /.row -->
-
-	
-		
-		
-        <!-- Footer -->
         <footer>
             <div class="row">
                 <div class="col-lg-12">
@@ -107,12 +105,7 @@
         </footer>
 
     </div>
-    <!-- /.container -->
-
-    <!-- jQuery Version 1.11.0 -->
     <script src="js/jquery-1.11.0.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 </body>
 

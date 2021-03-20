@@ -1,94 +1,161 @@
-<canvas id="c"></canvas>
-<script>
+<html>
+  <head>
+    <style>
+      body {    
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+  <script>
     var canvas = document.getElementById("c");
-    canvas.width = 1000;
-    canvas.height = 400;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     var ctx = canvas.getContext("2d");
-
+  
+    ctx.font = '32px serif';
+    ctx.textBaseline = "top";
+    ctx.textAlign = "left"; 
+  
+    // Create gradient
+    var gradientBackground = ctx.createLinearGradient(canvas.width/2,0,canvas.width/2,canvas.height);
+    gradientBackground.addColorStop(0,"MidnightBlue");
+    gradientBackground.addColorStop(1,"black");
+  
     (function () {
-        var requestAnimationFrame = window.requestAnimationFrame ||
-                                    window.mozRequestAnimationFrame || 
-                                    window.webkitRequestAnimationFrame || 
-                                    window.msRequestAnimationFrame;
-        window.requestAnimationFrame = requestAnimationFrame;
+      var requestAnimationFrame = window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame;
+      window.requestAnimationFrame = requestAnimationFrame;
     })();
-
-
+  
+  
     var keys = [];
+    gravity = 0.3;
+    friction = 0.8;
     var player = {
-        x: canvas.width / 2,
-        y: 200,
-        width: 25,
-        height: 25,
-        speed: 3,
-        velX: 0,
-        velY: 0,
-        jumping: false,
-        grounded: false,
-        color:'#E6AC27',
-        update: function(){
-
-        }
+      x: canvas.width / 2,
+      y: 200,
+      width: 32,
+      height: 32,
+      speed: 3,
+      velX: 0,
+      velY: 0,
+      jumping: false,
+      grounded: true,
+      color: '#E6AC27',
+      draw: function (ctx) {
+        ctx.fillStyle = this.color;
+        //ctx.fillRect(this.x, this.y, this.width, this.height);
+  
+        ctx.fillText('🎃', this.x, this.y,this.width);
+      }
     };
-
-
-    function updatePlayer(){
-        // up arrow or space
-        if (keys[38] || keys[32] || keys[87]) {
-            
-            if (!player.jumping && player.grounded) {
-                player.jumping = true;
-                player.grounded = false;
-                player.velY = -player.speed * 2.5;//how high to jump
-            }
+  
+  
+    function updatePlayer() {
+      if (keyIs('up')) {
+        if (!player.jumping && player.grounded) {
+          player.jumping = true;
+          player.grounded = false;
+          player.velY = -player.speed * 4;
         }
-        // right arrow
-        if (keys[39] || keys[68]) {
-            
-            if (player.velX < player.speed) {
-                player.velX++;
-            }
+      }
+      if (keyIs('right')) {
+  
+        if (player.velX < player.speed) {
+          player.velX++;
         }
-        // left arrow
-        if (keys[37] || keys[65]) {
-            
-            if (player.velX > -player.speed) {
-                player.velX--;
-            }
+      }
+      if (keyIs('left')) {
+  
+        if (player.velX > -player.speed) {
+          player.velX--;
         }
-
-        player.x += player.velX;
-        player.y += player.velY;
+      }
+  
+      player.velX *= friction;
+      player.velY += gravity;
+   
+  
+      player.x += player.velX;
+      player.y += player.velY;
+      if (player.x <= 0) {
+        player.x = 0;
+        player.velX *= -1;
+      }
+  
+      if (player.y >= canvas.height-player.height) {
+        player.y = canvas.height-player.height
+        player.velY = 0;
+        player.grounded = true;
+        player.jumping = false;
+      }
     }
-
-
-    function update() {
-        updatePlayer();
-        ctx.fillStyle = "#00";
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-    
-        ctx.save(); //Freeze redraw
-
-        ctx.fill();//Draw charater stuff
-
-
-        ctx.fillStyle = player.color;
-        ctx.fillRect(player.x, player.y, player.width, player.height);
-
-        ctx.restore(); //And now do the redraw
-        requestAnimationFrame(update);
+  
+    function keyIs(label) {
+      switch (label) {
+        case 'up':
+          return (keys[38] || keys[32] || keys[87]);
+          break;
+        case 'right':
+          return (keys[39] || keys[68])
+          break;
+        case 'left':
+          return (keys[37] || keys[65]);
+          break;
+      }
+  
+      return false;
     }
-
-    window.addEventListener("load", function () {
-        update();
+  
+  
+    function gameloop() {
+      updatePlayer();
+      ctx.fillStyle = "#00";
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      ctx.save(); //Freeze redraw
+  
+      ctx.fill();
+  
+      ctx.fillStyle = gradientBackground;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+  
+      for(i=-5;i<canvas.width;i+=20){
+        ctx.fillText('🥦', i, canvas.height-12);
+      }
+  
+  
+      player.draw(ctx);
+  
+      ctx.restore(); //And now do the redraw
+      requestAnimationFrame(gameloop);
+    }
+  
+    window.addEventListener('load', function () {
+      gameloop();
     });
-
-    document.body.addEventListener("keydown", function (e) {
-        keys[e.keyCode] = true;
+  
+    document.body.addEventListener('keydown', function (e) {
+      keys[e.keyCode] = true;
     });
-    
-    document.body.addEventListener("keyup", function (e) {
-        keys[e.keyCode] = false;
+  
+    document.body.addEventListener('keyup', function (e) {
+      keys[e.keyCode] = false;
     });
+  
+    document.body.addEventListener('mousedown', function(e) {
+      keys[38] = true;
+    });
+  
+    document.body.addEventListener('mouseup', function(e) {
+      keys[38] = false;
+    });
+  </script>
+</html>
 
-</script>
