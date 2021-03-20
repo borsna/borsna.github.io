@@ -12,8 +12,8 @@
     var ctx = canvas.getContext("2d");
   
     ctx.font = '32px serif';
-    ctx.textBaseline = "top";
-    ctx.textAlign = "left"; 
+    ctx.textBaseline = "center";
+    ctx.textAlign = "center"; 
   
     // Create gradient
     var gradientBackground = ctx.createLinearGradient(canvas.width/2,0,canvas.width/2,canvas.height);
@@ -48,7 +48,15 @@
         ctx.fillStyle = this.color;
         //ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.font = '32px serif';
+        ctx.translate(this.x, this.y);
+        if(keyIs('right')){
+          ctx.rotate(10 * Math.PI / 180);
+        }else if(keyIs('left')){
+          ctx.rotate(-10 * Math.PI / 180);
+        }
+        ctx.translate(-this.x, -this.y);
         ctx.fillText('🎃', this.x, this.y, this.width);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
       }
     };
   
@@ -84,8 +92,8 @@
         player.velX *= -1;
       }
   
-      if (player.y >= canvas.height-player.height) {
-        player.y = canvas.height-player.height
+      if (player.y >= canvas.height-player.height/2) {
+        player.y = canvas.height-player.height/2;
         player.velY = 0;
         player.grounded = true;
         player.jumping = false;
@@ -117,16 +125,16 @@
   
       // Moon
       ctx.font = '200px serif';
-      ctx.fillText(player.jumping ? '🤡':'🌕', 20, 50);
+      ctx.fillText('🌕', 150, 200);
 
       // Tree
       ctx.font = '500px serif';
-      ctx.fillText('🌳', canvas.width/2-200, canvas.height-470);
+      ctx.fillText('🌳', canvas.width/2, canvas.height-80);
 
       // Grass
       ctx.font = '32px serif';
       for(i=-5;i<canvas.width;i+=20){
-        ctx.fillText('🥦', i, canvas.height-12);
+        ctx.fillText('🥦', i, canvas.height+10);
       }
       
       // Player
@@ -139,7 +147,7 @@
     window.addEventListener('load', function () {
       gameloop();
     });
-  
+
     document.body.addEventListener('keydown', function (e) {
       keys[e.keyCode] = true;
     });
