@@ -1,16 +1,10 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
-    <style>
-      body {    
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-    </style>
+    <style>body { margin: 0 !important; padding: 0 !important;}</style>
   </head>
   <body>
-    <canvas id="c"></canvas>
-  </body>
+  <canvas id="c"></canvas>
   <script>
     var canvas = document.getElementById("c");
     canvas.width = window.innerWidth;
@@ -25,6 +19,8 @@
     var gradientBackground = ctx.createLinearGradient(canvas.width/2,0,canvas.width/2,canvas.height);
     gradientBackground.addColorStop(0,"MidnightBlue");
     gradientBackground.addColorStop(1,"black");
+
+    ctx.fillStyle = gradientBackground;
   
     (function () {
       var requestAnimationFrame = window.requestAnimationFrame ||
@@ -33,7 +29,6 @@
         window.msRequestAnimationFrame;
       window.requestAnimationFrame = requestAnimationFrame;
     })();
-  
   
     var keys = [];
     gravity = 0.3;
@@ -52,8 +47,8 @@
       draw: function (ctx) {
         ctx.fillStyle = this.color;
         //ctx.fillRect(this.x, this.y, this.width, this.height);
-  
-        ctx.fillText('🎃', this.x, this.y,this.width);
+        ctx.font = '32px serif';
+        ctx.fillText('🎃', this.x, this.y, this.width);
       }
     };
   
@@ -82,7 +77,6 @@
       player.velX *= friction;
       player.velY += gravity;
    
-  
       player.x += player.velX;
       player.y += player.velY;
       if (player.x <= 0) {
@@ -114,27 +108,31 @@
       return false;
     }
   
-  
     function gameloop() {
       updatePlayer();
-      ctx.fillStyle = "#00";
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-      ctx.save(); //Freeze redraw
-  
-      ctx.fill();
-  
-      ctx.fillStyle = gradientBackground;
+      ctx.save();
+
       ctx.fillRect(0,0,canvas.width,canvas.height);
   
+      // Moon
+      ctx.font = '200px serif';
+      ctx.fillText(player.jumping ? '🤡':'🌕', 20, 50);
+
+      // Tree
+      ctx.font = '500px serif';
+      ctx.fillText('🌳', canvas.width/2-200, canvas.height-470);
+
+      // Grass
+      ctx.font = '32px serif';
       for(i=-5;i<canvas.width;i+=20){
         ctx.fillText('🥦', i, canvas.height-12);
       }
-  
-  
+      
+      // Player
       player.draw(ctx);
   
-      ctx.restore(); //And now do the redraw
+      ctx.restore();
       requestAnimationFrame(gameloop);
     }
   
@@ -168,12 +166,12 @@
 
     document.body.addEventListener('touchstart', function(e) {
       keys[38] = true;
-
     });
 
     document.body.addEventListener('touchend', function(e) {
       keys[38] = false;
     });
   </script>
+</body>
 </html>
 
