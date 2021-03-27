@@ -12,11 +12,10 @@
 </head>
 
 <body>
-
   <canvas id="canvas"></canvas>
   <script>
     const canvas = document.getElementById("canvas");
-    const { Engine, Render, Runner, World, Bodies } = Matter;
+    const { Engine, Render, Runner, World, Bodies, Mouse, Events, Body } = Matter;
 
     const text = [
       ['i', 'n', 'c', 'o', 'm'],
@@ -29,7 +28,6 @@
     function init() {
       let width = window.innerWidth;
       let height = window.innerHeight;
-      let vmin = Math.min(width, height);
       
       engine.world.gravity.x = 0.5;
       World.clear(engine.world);
@@ -67,15 +65,29 @@
           render: {
             fillStyle: "green"
           }
+        }),
+        Bodies.rectangle(width / 6, height / 2 - 5, height * 0.800, 20, {
+          isStatic: true,
+          angle: 0.1,
+          render: {
+            fillStyle: "#333333"
+          }
+        }),
+        Bodies.rectangle(width / 2, height / 2 + 300, height * 0.800, 20, {
+          isStatic: true,
+          angle: -0.2,
+          render: {
+            fillStyle: "#FFBB00"
+          }
         })
       ]);
 
       for(var row = 0; row < text.length; row++) {
         for(var col = 0; col < text[row].length; col++) {    
           World.add(engine.world, 
-            Bodies.rectangle(col * 150+100, row * 155, 134, 134, {
+            Bodies.rectangle(col * 150+100 +Math.random()*0.3, row * 155+Math.random()*0.3, 134, 134, {
               isStatic: false,
-              angle: Math.random() * (0.06 + 0.03)  -0.03,
+              angle: Math.random() * -0.03 +0.05,
               render: {
                 sprite: {
                   texture: "assets/images/"+text[row][col]+".png"
@@ -85,7 +97,7 @@
           );
         }
       }
-      
+
       Engine.run(engine);
       Render.run(render);
     }
