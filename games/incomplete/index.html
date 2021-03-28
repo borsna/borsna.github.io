@@ -88,6 +88,7 @@
             Bodies.rectangle(col * 150+100 +Math.random()*0.3, row * 155+Math.random()*0.3, 134, 134, {
               isStatic: false,
               angle: Math.random() * -0.03 +0.05,
+              chamfer:  1,
               render: {
                 sprite: {
                   texture: "assets/images/"+text[row][col]+".png"
