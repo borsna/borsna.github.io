@@ -15,7 +15,7 @@
   <canvas id="canvas"></canvas>
   <script>
     const canvas = document.getElementById("canvas");
-    const { Engine, Render, Runner, World, Bodies, Mouse, Events, Body } = Matter;
+    const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint, Events, Body } = Matter;
 
     const text = [
       ['i', 'n', 'c', 'o', 'm'],
@@ -97,6 +97,20 @@
           );
         }
       }
+
+      var mouse = Mouse.create(render.canvas),
+        mouseConstraint = MouseConstraint.create(engine, {
+          mouse: mouse,
+          constraint: {
+              stiffness: 0.2,
+              render: {
+                  visible: false
+              }
+          }
+        }
+      );
+
+      World.add(engine.world, mouseConstraint);
 
       Engine.run(engine);
       Render.run(render);
