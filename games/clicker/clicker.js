@@ -24,6 +24,20 @@ ctx.fillStyle = gradientBackground;
 
 gravity = 0.3;
 friction = 0.8;
+var progress = {
+  x: 10,
+  y: 1000,
+  width:100,
+  height:10,
+  score: 99,
+  max:100,
+  draw: function(ctx){
+    ctx.fillStyle = 'green';
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.fillStyle = 'red';
+    ctx.fillRect(this.x, this.y, this.width/this.score, this.height);
+  }
+}
 var player = {
   x: canvas.width / 2,
   y: 200,
@@ -64,8 +78,6 @@ function gameloop() {
 
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-
-
   // Bottom
   ctx.font = '32px serif';
   for(i=-5;i<canvas.width;i+=26){
@@ -75,6 +87,8 @@ function gameloop() {
   // Player
   player.update();
   player.draw(ctx);
+
+  progress.draw(ctx);
 
   ctx.restore();
   requestAnimationFrame(gameloop);
