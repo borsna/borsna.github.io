@@ -19,7 +19,6 @@
     const canvas = document.getElementById("canvas");
     const { Engine, Render, Runner, World, Bodies, Mouse, Events, Vertices, Collision, MouseConstraint, Body } = Matter;
 
-    var items = [];
     var blue = [];
     var red = [];
     let engine = Engine.create();
@@ -30,6 +29,7 @@
     var objectScale = 1;
     var topSensor = {};
     var turn = 'blue';
+    var dropPosition = 0;
 
     function init() {
       let width = window.innerWidth;
@@ -62,6 +62,15 @@
 
         ctx.fillStyle = "#0078D7";
         ctx.fillText("🔵 "+pointsBlue.toString().padStart(4, '0'), width-300, height-30);
+      
+        
+        ctx.beginPath();
+        ctx.strokeStyle = turn == 'red' ? "#E81224" : "#0078D7";
+        ctx.fillStyle = turn == 'red' ? "#E81224" : "#0078D7";
+        var placeholderWidth=100*objectScale;
+        ctx.arc(100*objectScale+dropPosition-placeholderWidth, -100, placeholderWidth, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fill();
       });
 
       World.add(engine.world, [
@@ -117,6 +126,8 @@
           if(event.pairs[i].bodyA === topSensor || event.pairs[i].bodyB === topSensor){
             topSensorActive = false;
             topSensor.render.fillStyle = 'black';
+          }else{
+            topSensor.render.fillStyle = 'green';
           }
         }
 
@@ -148,6 +159,7 @@
       var item =  Bodies.circle(x, y, 100, {
         label: turn,
         haveLanded: false,
+        restitution: 0.5,
         render: {
           fillStyle: turn == 'blue' ? '#0078D7' : '#E81224'
         }
@@ -178,6 +190,10 @@
         canDrop = false;
       }
     });
+
+    document.body.addEventListener('mousemove', function(e){
+      dropPosition = e.clientX;
+    })
 
     init();
   </script>
