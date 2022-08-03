@@ -3,7 +3,7 @@
 <head>
   <title>🔴Connect Four🔵</title>
   <!--<link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQFSURBVFhHxZZbSFRRFIbXpJO3saCbBT1oQUhRQUkXQkyp6GpEYBBhmPVSdKGHHoKg6AI9CRURVA9pF+ghojuVZGiWJRaBlPRSROWlshwdR8eZaf373PfZp9GM+mCds/Y5++y19tprr7N95CSu34eLPK4nI/T7f0MZgbGVozxjER+IU09VmPpqIlRRMsvRbe/V17r25xEI63dPfMk+CpSl0ZhzmRT7CysmO1CNS/eZXtH4HT6/j46v+OAVqQqWCZr6e2QHSnDpq4+IUCciyl83ZnfpLQd7WNpYMMhCPPBCdiDEcg/K9/IgxWOJnajO7RR39AxtyaD20gzaN9svnunUs/xkUeaF7ACA94LOsiAdbo5RUox4vdXS74+J+4b0j+Tz+SiTl+ZQXgr1lgeofm2aYZWzWnTLES0bslfTWFqgLJ6URHdXpkE18UrtRHFaebeXHn2O6i3hxHtNdY6JaIheW3OT6eSiVKh/jV1PwnT27YDeEraE3/Yl+IHLoqwkl/EBzoW0893inohIVOsblfqe4DHzJybpLc0WMBxYwJIJ5eFqZ9hB3jXkJtHS24m3p9Fn/nV33/urzLGRE3OhGA48xeXxGrfxEG/Hlp/abJ61x6ifZ+gF3jV0INeImjtj4luZ2mLTRiMucMAsGPMmmCEyQQLZKbjpHYXCW853y++4++aNd9jIggP7oe2ckYybiwaetZ1X36z2lsdh2sZi0PTV2feFHg2Z3TPNOnEQuwBFYlTrpgwaneLeaKqth8DieSonGwjznjeeyagWrKs/TllVPVBDiAASgjJH4uoGA8gC1tyzwmvoXn1lAlahTDeSkEZwFRsKDz6ZhcWhDwa7LWjCUZTOfwlqBTAjEIurA4aOkC8hK6FaWTeeq9632d6rsNuCA6JXsB9Xb6Zc0YoRyLHpBvb32Yr3drojukLUAweqoB192Yebi/U51va8/C5C199bX8vI79dlq7f2sVfmbC8iByaxfEZLlQfdkTiNrxRbZsh08NkgwL9nGdvSTEYEvmg60fN2dzZjgLnjzFQZNHP4G5Xxxg6HjU/GyIW4eJXZ2uJ0Gqnw4cLiFCEyfu5bx9+oyL9h2ijCxRi2hkXEeYlUzwG2bVdZgE87+gMGcyuZ6hdin2eAlz3IfVVlZZn1N4WtR1Ds8xIV8UlblLbXuU/n2DjtpQG6VKSdFT5stGZo6BcLU6ljs1aWZXbwmLWtZviFLSD7mcvyBgoOJqqzwZ+AM0KdZXw6i7ABFIGynMDLGj4jqH7Tg+EFJzXyyhYRh3GgcgBgaXDgzxAtZsf0ZDowJ0X8tLz+G6hwQS4DR5r66FSzef4DWHPjZDwk8lkwgeFIAcuwQbE6zYIKojJiF/RBX3yTAKJfF5mBOeoZI9UAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />-->
-  <script src="js/matter.js" type="text/javascript"></script>
+  <script src="js/matter.min.js" type="text/javascript"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
     body {
@@ -57,13 +57,12 @@
       var ctx = canvas.getContext("2d");
       Events.on(render, "afterRender", function(e){
         ctx.fillStyle = "#E81224";
-        ctx.font = "70px Arial";
-        ctx.fillText("🔴 "+pointsRed.toString().padStart(4, '0'), 30, height-30);
+        ctx.font = (70*objectScale)+"px monospace";
+        ctx.fillText("🔴"+pointsRed.toString().padStart(4, '0'), 30, height-30);
 
         ctx.fillStyle = "#0078D7";
-        ctx.fillText("🔵 "+pointsBlue.toString().padStart(4, '0'), width-300, height-30);
+        ctx.fillText("🔵"+pointsBlue.toString().padStart(4, '0'), width-290*objectScale, height-30);
       
-        
         ctx.beginPath();
         ctx.strokeStyle = turn == 'red' ? "#E81224" : "#0078D7";
         ctx.fillStyle = turn == 'red' ? "#E81224" : "#0078D7";
@@ -74,9 +73,9 @@
       });
 
       World.add(engine.world, [
-        Bodies.rectangle(0, height-50, width*2, 100, {isStatic: true, render: {fillStyle: "#FFB347"}}),
-        Bodies.rectangle(0, height/2, 50, height, {isStatic: true, render: {fillStyle: "#FFB347"}}),
-        Bodies.rectangle(width, height/2, 50, height, {isStatic: true, render: {fillStyle: "#FFB347"}})
+        Bodies.rectangle(0, height-50*objectScale, width*2, 75*objectScale+50, {isStatic: true, render: {fillStyle: "#FFB347"}}),
+        Bodies.rectangle(0, height/2, 1, height, {isStatic: true, render: {fillStyle: "#000"}}),
+        Bodies.rectangle(width, height/2, 1, height, {isStatic: true, render: {fillStyle: "#000"}})
       ]);
 
       topSensor = Bodies.rectangle(0, 0, width*2, 200, {
@@ -111,9 +110,9 @@
               }
 
               if(event.pairs[i].bodyA.label == 'red'){
-                pointsRed++;
+                pointsRed+=connected.length;
               }else{
-                pointsBlue++;
+                pointsBlue+=connected.length;
               }
 
             }
