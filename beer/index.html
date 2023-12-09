@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Julöl 2023</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+    body{font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;}
+    .beer{
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      width:100%;
+      border-bottom: 1px solid gray;
+    }
+    .beer a{
+      text-decoration: none;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div v-for="b in metadata.beers" class="beer">
+        <a :href="b.Untappd">
+          <strong v-if="b.Snittbetyg">🍾</strong>
+          <span v-if="b.Snittbetyg.length==0">🍺</span>
+          <span>{{ b.Namn }}</span>, 
+          <span>{{ b.Bryggeri }}</span>
+        </a>
+      </div>
+    </div>
+    
+    <script>
+      const { createApp, ref, reactive } = Vue
+    
+      createApp({
+        setup() {
+          const metadata = reactive({beers:[]})
+
+          return {
+            metadata
+          }
+        },
+        mounted(){
+          var self = this
+          var csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vSpqdVSfFoqUQAoY020eA7W8y55sU8KxN-cI-wrJBwMnVd-jEaYR555AngNcke62v_3N5g7aoT4TZXo/pub?gid=0&single=true&output=csv";
+
+          Papa.parse(csvUrl, {
+            download: true,
+            header:true,
+            complete: function(results) {
+              console.log(results.data)
+              self.metadata.beers = results.data
+            }
+          });
+        }
+      }).mount('#app')
+    </script>
+  </body>
+</html>
