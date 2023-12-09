@@ -27,6 +27,7 @@
           <span v-if="b.Snittbetyg.length==0">🍺</span>
           <span>{{ b.Namn }}</span>, 
           <span>{{ b.Bryggeri }}</span>
+          <strong v-if="b.Snittbetyg" style="float:right">{{ b.Snittbetyg }}</strong>
         </a>
       </div>
     </div>
