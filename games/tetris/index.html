@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenAI Tetris Game</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="tetrisCanvas" width="300" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById("tetrisCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const ROWS = 20;
+    const COLS = 10;
+    const BLOCK_SIZE = 30;
+
+    const tetrisBoard = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+
+    const shapes = [
+      { shape: [[1, 1, 1, 1]], color: "cyan" },
+      { shape: [[1, 1, 1], [1]], color: "blue" },
+      { shape: [[1, 1, 1], [0, 0, 1]], color: "orange" },
+      { shape: [[1, 1, 1], [0, 1]], color: "yellow" },
+      { shape: [[1, 1, 1], [1, 0]], color: "green" },
+      { shape: [[1, 1], [1, 1]], color: "purple" },
+      { shape: [[1, 1, 0], [0, 1, 1]], color: "red" },
+    ];
+
+    let currentShape;
+    let currentRow;
+    let currentCol;
+
+    const FALL_SPEED = 500; // milliseconds
+    const MANUAL_FALL_SPEED = 50; // milliseconds for manual fall
+    let lastTime = 0;
+
+    let manualFall = false;
+
+    function drawBlock(x, y, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+      ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+    }
+
+    function drawBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          if (tetrisBoard[row][col] !== 0) {
+            const color = tetrisBoard[row][col];
+            drawBlock(col, row, color);
+          }
+        }
+      }
+    }
+
+    function drawShape() {
+      currentShape.shape.forEach((row, i) => {
+        row.forEach((block, j) => {
+          if (block === 1) {
+            const color = currentShape.color;
+            drawBlock(currentCol + j, currentRow + i, color);
+          }
+        });
+      });
+    }
+
+    function moveDown() {
+      const currentTime = Date.now();
+      const deltaTime = currentTime - lastTime;
+
+      if (manualFall) {
+        if (deltaTime > MANUAL_FALL_SPEED) {
+          currentRow++;
+
+          if (checkCollision()) {
+            currentRow--;
+            mergeShape();
+            spawnShape();
+          }
+
+          lastTime = currentTime;
+        }
+      } else {
+        if (deltaTime > FALL_SPEED) {
+          currentRow++;
+
+          if (checkCollision()) {
+            currentRow--;
+            mergeShape();
+            spawnShape();
+          }
+
+          lastTime = currentTime;
+        }
+      }
+    }
+
+    function moveLeft() {
+      currentCol--;
+
+      if (checkCollision()) {
+        currentCol++;
+      }
+    }
+
+    function moveRight() {
+      currentCol++;
+
+      if (checkCollision()) {
+        currentCol--;
+      }
+    }
+
+    function rotate() {
+      const originalShape = currentShape.shape;
+      currentShape.shape = rotateMatrix(currentShape.shape);
+
+      if (checkCollision()) {
+        currentShape.shape = originalShape;
+      }
+    }
+
+    function rotateMatrix(matrix) {
+      const rotatedMatrix = matrix[0].map((_, index) =>
+        matrix.map((row) => row[index])
+      );
+
+      return rotatedMatrix.reverse();
+    }
+
+    function checkCollision() {
+      for (let i = 0; i < currentShape.shape.length; i++) {
+        for (let j = 0; j < currentShape.shape[i].length; j++) {
+          if (
+            currentShape.shape[i][j] === 1 &&
+            (tetrisBoard[currentRow + i] && tetrisBoard[currentRow + i][currentCol + j]) !== 0
+          ) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    function mergeShape() {
+      currentShape.shape.forEach((row, i) => {
+        row.forEach((block, j) => {
+          if (block === 1) {
+            tetrisBoard[currentRow + i][currentCol + j] = currentShape.color;
+          }
+        });
+      });
+
+      checkRows();
+    }
+
+    function checkRows() {
+      for (let row = ROWS - 1; row >= 0; row--) {
+        if (tetrisBoard[row].every((block) => block !== 0)) {
+          tetrisBoard.splice(row, 1);
+          tetrisBoard.unshift(Array(COLS).fill(0));
+        }
+      }
+    }
+
+    function spawnShape() {
+      const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+      currentShape = { ...randomShape };
+      currentRow = 0;
+      currentCol = Math.floor((COLS - currentShape.shape[0].length) / 2);
+
+      if (checkCollision()) {
+        // Game over, reset the board
+        tetrisBoard.forEach((row) => row.fill(0));
+      }
+    }
+
+    function gameLoop(timestamp) {
+      drawBoard();
+      drawShape();
+      moveDown();
+      requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      switch (event.code) {
+        case "ArrowLeft":
+          moveLeft();
+          break;
+        case "ArrowRight":
+          moveRight();
+          break;
+        case "ArrowDown":
+          manualFall = true;
+          break;
+        case "Space":
+          rotate();
+          break;
+      }
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.code === "ArrowDown") {
+        manualFall = false;
+      }
+    });
+
+    lastTime = Date.now();
+    spawnShape();
+    gameLoop();
+  </script>
+</body>
+</html>
