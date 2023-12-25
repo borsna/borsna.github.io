@@ -26,13 +26,13 @@
     const tetrisBoard = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 
     const shapes = [
-      { shape: [[1, 1, 1, 1]], color: "cyan" },
-      { shape: [[1, 1, 1], [1]], color: "blue" },
-      { shape: [[1, 1, 1], [0, 0, 1]], color: "orange" },
-      { shape: [[1, 1, 1], [0, 1]], color: "yellow" },
-      { shape: [[1, 1, 1], [1, 0]], color: "green" },
-      { shape: [[1, 1], [1, 1]], color: "purple" },
-      { shape: [[1, 1, 0], [0, 1, 1]], color: "red" },
+      { shape: [[1, 1, 1, 1]], color: "#f94144" },
+      { shape: [[1, 1, 1], [1]], color: "#f3722c" },
+      { shape: [[1, 1, 1], [0, 0, 1]], color: "#d08c60" },
+      { shape: [[1, 1, 1], [0, 1]], color: "#f9c74f" },
+      { shape: [[1, 1, 1], [1, 0]], color: "#90be6d" },
+      { shape: [[1, 1], [1, 1]], color: "#43aa8b" },
+      { shape: [[1, 1, 0], [0, 1, 1]], color: "#577590" },
     ];
 
     let currentShape;
@@ -206,6 +206,7 @@
           manualFall = true;
           break;
         case "Space":
+        case "ArrowUp":
           rotate();
           break;
       }
