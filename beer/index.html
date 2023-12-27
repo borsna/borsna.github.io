@@ -3,7 +3,7 @@
   <head>    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Julöl 2023</title>
+    <title>🍺Julöl 2023</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
@@ -11,7 +11,7 @@
     .beer{
       padding-top: 0.5rem;
       padding-bottom: 0.5rem;
-      width:100%;
+      width: 100%;
       border-bottom: 1px solid gray;
     }
     .beer a{
@@ -20,11 +20,11 @@
     </style>
   </head>
   <body>
-    <div id="app">
+    <div id="beer-list">
       <div v-for="b in metadata.beers" class="beer">
         <a :href="b.Untappd">
           <strong v-if="b.Snittbetyg">🍾</strong>
-          <span v-if="b.Snittbetyg.length==0">🍺</span>
+          <span v-if="b.Snittbetyg.length == 0">🍺</span>
           <span>{{ b.Namn }}</span>, 
           <span>{{ b.Bryggeri }}</span>
           <strong v-if="b.Snittbetyg" style="float:right">{{ b.Snittbetyg }}</strong>
@@ -34,7 +34,8 @@
     
     <script>
       const { createApp, ref, reactive } = Vue
-    
+      const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpqdVSfFoqUQAoY020eA7W8y55sU8KxN-cI-wrJBwMnVd-jEaYR555AngNcke62v_3N5g7aoT4TZXo/pub?gid=0&single=true&output=csv"
+
       createApp({
         setup() {
           const metadata = reactive({beers:[]})
@@ -45,18 +46,16 @@
         },
         mounted(){
           var self = this
-          var csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vSpqdVSfFoqUQAoY020eA7W8y55sU8KxN-cI-wrJBwMnVd-jEaYR555AngNcke62v_3N5g7aoT4TZXo/pub?gid=0&single=true&output=csv";
 
           Papa.parse(csvUrl, {
             download: true,
-            header:true,
+            header: true,
             complete: function(results) {
-              console.log(results.data)
               self.metadata.beers = results.data
             }
-          });
+          })
         }
-      }).mount('#app')
+      }).mount('#beer-list')
     </script>
   </body>
 </html>

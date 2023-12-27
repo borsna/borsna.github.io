@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>🍺Julöl 2023</title>
+
+    <style>
+        body{font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;}
+        .beer{
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            width: 100%;
+            border-bottom: 1px solid gray;
+        }
+        .beer a{
+            text-decoration: none;
+        }
+    </style>
+  </head>
+  <body>
+    <beer-list src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSpqdVSfFoqUQAoY020eA7W8y55sU8KxN-cI-wrJBwMnVd-jEaYR555AngNcke62v_3N5g7aoT4TZXo/pub?gid=0&single=true&output=csv" />
+
+    <script>
+        class BeerList extends HTMLElement {
+            constructor() {
+                super()
+                
+                this.shadow = this.attachShadow({ mode: "closed" })
+                this.render()
+            }
+
+            async render() {
+                fetch(this.getAttribute("src"))
+                .then(response => response.text())
+                .then(textString => {
+                    const beers = this.csvJSON(textString)
+                    for(const b of beers){
+                        if(b.Namn == null) continue;
+                        
+                        var el = document.createElement('div');
+                        el.classList = ['beer']
+                        el.innerHTML = "🍺" + b.Snittbetyg + " " + b.Namn
+                        
+                        this.shadow.appendChild(el)
+                    }
+                })
+            }
+
+            csvJSON(text, quoteChar = '"', delimiter = ',') {
+                var rows=text.split("\n");
+                var headers=rows[0].split(delimiter);
+
+                const regex = new RegExp(`\\s*(${quoteChar})?(.*?)\\1\\s*(?:${delimiter}|$)`, 'gs');
+            
+                const match = line => [...line.matchAll(regex)]
+                .map(m => m[2]) 
+                .slice(0, -1); 
+            
+                var lines = text.split('\n');
+                const heads = headers ?? match(lines.shift());
+                lines = lines.slice(1);
+                
+                return lines.map(line => {
+                return match(line).reduce((acc, cur, i) => {
+                    
+                    const val = cur.length <= 0 ? null : Number(cur) || cur;
+                    const key = heads[i] ?? `{i}`;
+                    return { ...acc, [key]: val };
+                }, {});
+                });
+            }
+        }
+
+        customElements.define("beer-list", BeerList);
+    </script>
+  </body>
+</html>
